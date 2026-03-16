@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis AI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Password Lock Overlay -->
+    <div id="passwordOverlay" class="overlay">
+        <div class="passwordBox">
+            <h2>Enter Password to Start Jarvis</h2>
+            <input type="password" id="passwordInput" placeholder="Enter password">
+            <button id="passwordSubmit">Start</button>
+            <p id="passwordError" class="error"></p>
+        </div>
+    </div>
+
+    <!-- Full-Screen AI Interface -->
+    <div id="aiInterface" class="hidden">
+        <div class="ai-background"></div>
+
+        <!-- Chat area -->
+        <div id="chatContainer">
+            <div id="messages"></div>
+            <div id="inputBar">
+                <input type="text" id="userInput" placeholder="Type your message here...">
+                
+                <!-- Buttons inside the input bar -->
+                <button id="sendBtn" class="inputBtn">➤</button>
+                <button id="voiceBtn" class="inputBtn">🎤</button>
+                <button id="generateCodeBtn" class="inputBtn">💻</button>
+                <button id="generateImageBtn" class="inputBtn">🖼️</button>
+                <button id="memoryBtn" class="inputBtn">🧠</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
