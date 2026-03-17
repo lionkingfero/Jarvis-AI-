@@ -1,87 +1,91 @@
-const PASSWORD = "7366062";
-
+// PASSWORD
 const passwordScreen = document.getElementById("password-screen");
-const jarvis = document.getElementById("jarvis");
+const passwordInput = document.getElementById("password-input");
+const passwordBtn = document.getElementById("password-btn");
+const jarvisScreen = document.getElementById("jarvis-screen");
 
-document.getElementById("password-submit").onclick = () => {
-  if(document.getElementById("password-input").value === PASSWORD){
-    passwordScreen.style.display = "none";
-    jarvis.classList.remove("hidden");
-    jarvisReply("Hello Mamar njie, Jarvis is online.");
+passwordBtn.addEventListener("click", () => {
+  if(passwordInput.value === "7366062"){
+    passwordScreen.classList.add("hidden");
+    jarvisScreen.classList.remove("hidden");
+    jarvisReply("Hello Mamar Njie, Jarvis is online. How can I help you today?");
   } else {
-    document.getElementById("error").innerText = "Wrong password";
+    alert("Incorrect password!");
   }
-};
+});
 
-function addMessage(text, type){
-  const msg = document.createElement("div");
-  msg.className = type;
-  msg.innerText = text;
-  document.getElementById("messages").appendChild(msg);
+// MESSAGES
+const messagesDiv = document.getElementById("messages");
+
+function jarvisReply(text){
+  const div = document.createElement("div");
+  div.className = "message";
+  div.innerText = text;
+  messagesDiv.appendChild(div);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-function userMsg(text){ addMessage(text, "user"); }
-function jarvisReply(text){ addMessage(text, "jarvis"); }
-
-function cleanInput(text){
-  text = text.toLowerCase();
-
-  // remove extra words
-  text = text.replace("tell me about","")
-             .replace("who is","")
-             .replace("what is","")
-             .replace("search","")
-             .replace("jarvis","")
-             .trim();
-
-  return text;
-}
-
-async function send(){
-  let text = document.getElementById("input").value;
+// SEND MESSAGE
+function sendMessage(){
+  const input = document.getElementById("input");
+  const text = input.value;
   if(!text) return;
+  const div = document.createElement("div");
+  div.className = "message";
+  div.innerText = "You: " + text;
+  messagesDiv.appendChild(div);
+  input.value = "";
 
-  userMsg(text);
-  document.getElementById("input").value = "";
+  // CUSTOM RESPONSES
+  const lower = text.toLowerCase();
 
-  let lower = text.toLowerCase();
-
-  // Custom commands
-  if
-    jarvisReply("Hi, how may I help you today?");
+  if(lower.includes("who made you")){
+    jarvisReply("I was created by Mamar Njie.");
     return;
   }
 
   if(lower.includes("wake up")){
-  jarvisReply("Oh, it's you Mamar Njie, my creator. How are you doing? How may I help you today?");
-  return;
-  }(lower.includes("wake up")){
-    jarvisReply("Oh, it's you Mamar njie, Jarvis father. How are you doing? How may I help you today?");
+    jarvisReply("Oh, it's you Mamar Njie, my creator. How are you doing? How may I help you today?");
     return;
   }
-if(lower.includes("who made you")){
-  jarvisReply("I was created by my Father, Mamar Njie.");
-  return;
-}
-  // CLEAN INPUT → makes sentences work
-  let query = cleanInput(text);
 
-  try{
-    jarvisReply("Searching...");
-
-    let res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
-    let data = await res.json();
-
-    if(data.extract){
-      jarvisReply(data.extract);
-    } else {
-      jarvisReply("I couldn't find anything.");
-    }
-
-  } catch {
-    jarvisReply("Error searching.");
+  if(lower.includes("hi")){
+    jarvisReply("Hello Mamar Njie! How may I help you today?");
+    return;
   }
-}// 🎤 VOICE
+
+  // SEARCH PLACEHOLDER
+  jarvisReply(`Searching Wikipedia & Internet for "${text}"... Functionality placeholder.`);
+}
+
+// MEMORY
+let memory = [];
+
+function remember(){
+  const input = document.getElementById("input").value;
+  if(input){
+    memory.push(input);
+    jarvisReply("I will remember that.");
+  }
+}
+
+// IMAGE PLACEHOLDER
+function generateImage(){
+  const input = document.getElementById("input").value;
+  if(input){
+    jarvisReply("Generating image for: " + input + " (Functionality placeholder)");
+  }
+}
+
+// CODE GENERATOR PLACEHOLDER
+function generateCode(){
+  const input = document.getElementById("input").value;
+  if(input){
+    jarvisReply("Generating code for: " + input + " (Functionality placeholder)");
+  }
+}
+
+// VOICE
 function startListening(){
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = "en-US";
@@ -89,27 +93,8 @@ function startListening(){
   recognition.onresult = function(event){
     let text = event.results[0][0].transcript;
     document.getElementById("input").value = text;
-    send();
-  };
+    sendMessage();
+  }
 
   recognition.start();
-}
-
-
-// 🖼 IMAGE (placeholder for now)
-function generateImage(){
-  let text = document.getElementById("input").value;
-  jarvisReply("Generating image for: " + text + " (coming in V6)");
-}
-
-
-// 🧠 MEMORY
-let memory = [];
-
-function remember(){
-  let text = document.getElementById("input").value;
-  if(text){
-    memory.push(text);
-    jarvisReply("I will remember that.");
-  }
 }
