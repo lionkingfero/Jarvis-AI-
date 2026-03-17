@@ -1,150 +1,70 @@
-// -----------------------------
-// Jarvis AI V4 - scripts.js
-// -----------------------------
-
-// Password setup
-const passwordOverlay = document.getElementById('passwordOverlay');
+// Password
+const correctPassword = "7366062";
+const overlay = document.getElementById('overlay');
 const passwordInput = document.getElementById('passwordInput');
-const passwordSubmit = document.getElementById('passwordSubmit');
+const passwordBtn = document.getElementById('passwordBtn');
 const passwordError = document.getElementById('passwordError');
+const jarvisContainer = document.getElementById('jarvisContainer');
 
-const aiInterface = document.getElementById('aiInterface');
+passwordBtn.addEventListener('click', () => {
+    if(passwordInput.value === correctPassword){
+        overlay.classList.add('hidden');
+        jarvisContainer.classList.remove('hidden');
+        addMessage("Jarvis", "Hello Mamar Njie, Jarvis is online. How can I help you today?");
+    } else {
+        passwordError.textContent = "Incorrect password!";
+    }
+});
+
+// Chat
+const messages = document.getElementById('messages');
 const userInput = document.getElementById('userInput');
 const sendBtn = document.getElementById('sendBtn');
-const voiceBtn = document.getElementById('voiceBtn');
-const generateCodeBtn = document.getElementById('generateCodeBtn');
-const generateImageBtn = document.getElementById('generateImageBtn');
-const memoryBtn = document.getElementById('memoryBtn');
-const messages = document.getElementById('messages');
 
-const PASSWORD = "7366062";
-
-// -----------------------------
-// Password Check
-// -----------------------------
-passwordSubmit.addEventListener('click', () => {
-    if (passwordInput.value === PASSWORD) {
-        passwordOverlay.style.display = 'none';
-        aiInterface.classList.remove('hidden');
-        addAIMessage("Hello MAMAR NJIE! Jarvis is online. How can I help you today?");
-    } else {
-        passwordError.textContent = "Wrong password! Try again.";
-    }
-});
-
-// -----------------------------
-// Utility: Add Messages
-// -----------------------------
-function addUserMessage(text) {
-    const msg = document.createElement('div');
-    msg.className = 'message user';
-    msg.textContent = text;
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
-}
-
-function addAIMessage(text) {
-    const msg = document.createElement('div');
-    msg.className = 'message ai';
-    msg.textContent = text;
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
-}
-
-// -----------------------------
-// Custom Responses
-// -----------------------------
-const customResponses = {
-    "who made you": "I was made by MAMAR NJIE.",
-    "yo jarvis wake up daddy's home": "Oh, it's you, MAMAR NJIE. Father, how are you doing? How may I help you today, Father?"
-};
-
-// -----------------------------
-// Button Click Functions
-// -----------------------------
-sendBtn.addEventListener('click', () => {
-    handleInput(userInput.value);
-    userInput.value = '';
-});
-
+sendBtn.addEventListener('click', () => handleInput());
 userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        handleInput(userInput.value);
-        userInput.value = '';
+    if(e.key === "Enter") handleInput();
+});
+
+function handleInput(){
+    const text = userInput.value.trim();
+    if(!text) return;
+    addMessage("You", text);
+    userInput.value = "";
+
+    // Custom responses
+    if(text.toLowerCase().includes("who made you")){
+        addMessage("Jarvis", "I was made by Mamar Njie.");
+        return;
     }
-});
-
-// -----------------------------
-// Voice Chat Button
-// -----------------------------
-voiceBtn.addEventListener('click', () => {
-    addAIMessage("Voice chat not implemented yet.");
-    // Placeholder for real voice input integration
-});
-
-// -----------------------------
-// Generate Code Button
-// -----------------------------
-generateCodeBtn.addEventListener('click', () => {
-    const codePrompt = prompt("Enter the type of code you want Jarvis to generate:");
-    if (codePrompt) {
-        addAIMessage(`Generating code for: ${codePrompt}...`);
-        // Placeholder for AI code generation logic
-    }
-});
-
-// -----------------------------
-// Generate Image Button
-// -----------------------------
-generateImageBtn.addEventListener('click', () => {
-    const imagePrompt = prompt("Enter what kind of image you want Jarvis to generate:");
-    if (imagePrompt) {
-        addAIMessage(`Generating image for: ${imagePrompt}...`);
-        // Placeholder for AI image generation logic
-    }
-});
-
-// -----------------------------
-// Memory Button
-// -----------------------------
-memoryBtn.addEventListener('click', () => {
-    const memory = JSON.parse(localStorage.getItem('jarvisMemory') || '[]');
-    alert("Jarvis Memory:\n\n" + (memory.join("\n") || "No memory yet."));
-});
-
-// -----------------------------
-// Main Input Handler
-// -----------------------------
-function handleInput(input) {
-    if (!input) return;
-    addUserMessage(input);
-
-    const lowerInput = input.toLowerCase();
-
-    // Check custom responses
-    for (const key in customResponses) {
-        if (lowerInput.includes(key)) {
-            addAIMessage(customResponses[key]);
-            saveMemory(`User: ${input}`);
-            saveMemory(`Jarvis: ${customResponses[key]}`);
-            return;
-        }
+    if(text.toLowerCase().includes("yo jarvis wake up daddy's home")){
+        addMessage("Jarvis", "Oh, it's you, Mamar Njie. Father, how are you doing? How may I help you today?");
+        return;
     }
 
-    // Fallback: Wikipedia / Internet search
-    addAIMessage(`Searching Wikipedia/Internet for: "${input}"...`);
-    // Placeholder for fetch Wikipedia & internet
-    // Example: call your own API or fetch logic here
-
-    saveMemory(`User: ${input}`);
-    saveMemory(`Jarvis: Could not find "${input}" online yet.`);
+    // Placeholder: internet/Wikipedia/Reddit/StackOverflow fetch
+    addMessage("Jarvis", "Searching the internet... (Not implemented yet)");
 }
 
-// -----------------------------
-// Memory Storage
-// -----------------------------
-function saveMemory(text) {
-    let memory = JSON.parse(localStorage.getItem('jarvisMemory') || '[]');
-    memory.push(text);
-    localStorage.setItem('jarvisMemory', JSON.stringify(memory));
-                           }
+// Helper to add messages
+function addMessage(sender, text){
+    const msg = document.createElement('div');
+    msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
+    msg.style.marginBottom = "8px";
+    messages.appendChild(msg);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+// Buttons (mic, memory, code, image) - placeholder
+document.getElementById('micBtn').addEventListener('click', ()=>{
+    addMessage("Jarvis","Voice Chat not implemented yet");
+});
+document.getElementById('memoryBtn').addEventListener('click', ()=>{
+    addMessage("Jarvis","View Memory not implemented yet");
+});
+document.getElementById('codeGenBtn').addEventListener('click', ()=>{
+    addMessage("Jarvis","Code Generation not implemented yet");
+});
+document.getElementById('imageGenBtn').addEventListener('click', ()=>{
+    addMessage("Jarvis","Image Generation not implemented yet");
+});
