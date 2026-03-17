@@ -1,62 +1,39 @@
-import { MemoryService } from "../core/MemoryService";
-import { TTSService } from "../core/TTSService";
+import { MemoryService } from "./MemoryService";
+import { LLMService } from "./LLMService";
 
 export class Agent {
   private memory: MemoryService;
-  private tts: TTSService;
+  private llm: LLMService;
 
-  // Define custom responses
-  private customResponses: Record<string, string> = {
-    "hi": "Hello, Mamar Njie! How may I help you today?",
-    "jarvis wake up daddy's home": "Oh, it's you, Mamar Njie, father. How may I help you today?",
-    "who made you": "I was made by Mamar Njie.",
-    "tell me about your maker": "Mama Njie is a 17-year-old who is living in Gambia."
-  };
-
-  constructor(memoryService: MemoryService, ttsService: TTSService) {
+  constructor(memoryService: MemoryService, llmService: LLMService) {
     this.memory = memoryService;
-    this.tts = ttsService;
+    this.llm = llmService;
   }
 
-  // Main method to process user input
+  // Process user input and decide action
   public async processInput(input: string): Promise<string> {
-    const text = input.trim();
-    if (!text) return "";
+    const lowerInput = input.toLowerCase().trim();
 
-    // Save user message in memory
-    this.memory.addChatMessage("User", text);
+    // Check for custom commands
+    if (lowerInput === "hi") return "Hello, Mamar Njie! How may I help you today?";
+    if (lowerInput === "jarvis wake up daddy's home") return "Oh, it's you, Mamar Njie, father. How may I help you today?";
+    if (lowerInput === "who made you") return "I was made by Mamar Njie.";
+    if (lowerInput === "tell me about your maker") return "Mama Njie is a 17-year-old who is living in Gambia.";
 
-    const lowerText = text.toLowerCase();
-
-    // Check for custom responses
-    if (this.customResponses[lowerText]) {
-      const reply = this.customResponses[lowerText];
-      this.memory.addChatMessage("Jarvis", reply);
-      this.tts.speak(reply);
-      return reply;
-    }
-
-    // Handle search-like commands
+    // Check for knowledge requests
     if (
-      lowerText.startsWith("tell me") ||
-      lowerText.startsWith("who is") ||
-      lowerText.startsWith("tell me about")
+      lowerInput.startsWith("who is") ||
+      lowerInput.startsWith("tell me") ||
+      lowerInput.startsWith("tell me about")
     ) {
-      const reply = `Searching for "${text}" in Wikipedia, Reddit, Internet...`;
-      this.memory.addChatMessage("Jarvis", reply);
-      this.tts.speak(reply);
-      return reply;
+      this.memory.addChatMessage("You", input);
+      const response = await this.llm.query(lowerInput);
+      this.memory.addChatMessage("Jarvis", response);
+      return response;
     }
 
     // Default fallback
-    const defaultReply = "I don't understand. Try 'who is' or 'tell me about' something.";
-    this.memory.addChatMessage("Jarvis", defaultReply);
-    this.tts.speak(defaultReply);
-    return defaultReply;
-  }
-
-  // Optional: get full chat history
-  public getChatHistory() {
-    return this.memory.getChatHistory();
+    this.memory.addChatMessage("You", input);
+    return "I don't understand. Try 'who is' or 'tell me about' something.";
   }
 }
