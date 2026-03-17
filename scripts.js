@@ -1,9 +1,4 @@
 // Elements
-const passwordScreen = document.getElementById('password-screen');
-const jarvisScreen = document.getElementById('jarvis-screen');
-const passwordInput = document.getElementById('password-input');
-const passwordSubmit = document.getElementById('password-submit');
-
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const messages = document.getElementById('messages');
@@ -13,16 +8,13 @@ const imageBtn = document.getElementById('image-btn');
 const memoryBtn = document.getElementById('memory-btn');
 const generateBtn = document.getElementById('generate-btn');
 
-// Password logic
-passwordSubmit.addEventListener('click', () => {
-  if(passwordInput.value === "7366062"){
-    passwordScreen.classList.add('hidden');
-    jarvisScreen.classList.remove('hidden');
-    addMessage("Jarvis", "Hello Mamar Njie! Jarvis is online. How may I help you today?");
-  } else {
-    alert("Incorrect password");
-  }
-});
+// Add message function
+function addMessage(sender, text){
+  const msg = document.createElement('div');
+  msg.innerHTML = `<b>${sender}:</b> ${text}`;
+  messages.appendChild(msg);
+  messages.scrollTop = messages.scrollHeight;
+}
 
 // Custom responses
 const customResponses = {
@@ -31,14 +23,6 @@ const customResponses = {
   "who made you": "I was made by Mamar Njie.",
   "tell me about your maker": "Mamar Njie is a 17-year-old living in Gambia."
 };
-
-// Add message function
-function addMessage(sender, text){
-  const msg = document.createElement('div');
-  msg.innerHTML = `<b>${sender}:</b> ${text}`;
-  messages.appendChild(msg);
-  messages.scrollTop = messages.scrollHeight;
-}
 
 // Process input
 function processInput(){
@@ -76,3 +60,6 @@ micBtn.addEventListener('click', () => addMessage("Jarvis","Voice input not impl
 imageBtn.addEventListener('click', () => addMessage("Jarvis","Image generation not implemented yet."));
 memoryBtn.addEventListener('click', () => addMessage("Jarvis","Memory feature not implemented yet."));
 generateBtn.addEventListener('click', () => addMessage("Jarvis","Code generation not implemented yet."));
+
+// Initial welcome
+addMessage("Jarvis", "Hello Mamar Njie! Jarvis is online. How may I help you today?");
