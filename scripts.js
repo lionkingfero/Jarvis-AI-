@@ -1,9 +1,4 @@
 // Elements
-const passwordScreen = document.getElementById('password-screen');
-const jarvisScreen = document.getElementById('jarvis-screen');
-const passwordInput = document.getElementById('password-input');
-const passwordSubmit = document.getElementById('password-submit');
-
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const messages = document.getElementById('messages');
@@ -13,28 +8,8 @@ const imageBtn = document.getElementById('image-btn');
 const memoryBtn = document.getElementById('memory-btn');
 const generateBtn = document.getElementById('generate-btn');
 
-// Password logic FIXED
-passwordSubmit.addEventListener('click', () => {
-  if(passwordInput.value === "7366062"){
-    // Hide password screen
-    passwordScreen.style.display = 'none';
-    // Show Jarvis screen
-    jarvisScreen.style.display = 'flex';
-    // Focus input
-    userInput.focus();
-    // Welcome message
-    addMessage("Jarvis", "Hello Mamar Njie! Jarvis is online. How may I help you today?");
-  } else {
-    alert("Incorrect password");
-  }
-});
-
-// Allow Enter key on password input
-passwordInput.addEventListener('keypress', (e) => {
-  if(e.key === "Enter"){
-    passwordSubmit.click();
-  }
-});
+// Show welcome message immediately
+addMessage("Jarvis", "Hello Mamar Njie! Jarvis is online. How may I help you today?");
 
 // Custom responses
 const customResponses = {
@@ -68,6 +43,7 @@ function processInput(){
       lowerText.startsWith("who is") ||
       lowerText.startsWith("tell me about")
   ){
+    // Placeholder for internet/Wikipedia/Reddit search
     addMessage("Jarvis", `Searching for "${text}" in Wikipedia, Reddit, Internet...`);
   } else {
     addMessage("Jarvis", "I don't understand. Try 'who is' or 'tell me about' something.");
