@@ -1,3 +1,4 @@
+import fetch from "node-fetch"; // placeholder for future web requests
 import { MemoryService } from "./MemoryService";
 
 export class LLMService {
@@ -7,48 +8,35 @@ export class LLMService {
     this.memory = memoryService;
   }
 
-  /**
-   * Generate a response for the user input.
-   * Currently uses placeholder logic but ready for AI/Web API integration.
-   */
-  public async generateResponse(input: string): Promise<string> {
-    const text = input.trim();
-    if (!text) return "";
+  // Main query function
+  public async query(input: string): Promise<string> {
+    // Normalize input
+    const lowerInput = input.toLowerCase().trim();
 
-    // Save user message in memory
-    this.memory.addChatMessage("User", text);
+    // Custom responses that are quick
+    const customResponses: { [key: string]: string } = {
+      "hi": "Hello, Mamar Njie! How may I help you today?",
+      "jarvis wake up daddy's home": "Oh, it's you, Mamar Njie, father. How may I help you today?",
+      "who made you": "I was made by Mamar Njie.",
+      "tell me about your maker": "Mama Njie is a 17-year-old who is living in Gambia."
+    };
 
-    const lowerText = text.toLowerCase();
-
-    // Custom commands handled here (optional redundancy with Agent)
-    if (lowerText.includes("who made you")) {
-      const reply = "I was made by Mamar Njie.";
-      this.memory.addChatMessage("Jarvis", reply);
-      return reply;
+    if (customResponses[lowerInput]) {
+      return customResponses[lowerInput];
     }
 
-    // Handle general search commands
+    // Placeholder: simulate searching Wikipedia, Reddit, Internet
     if (
-      lowerText.startsWith("tell me") ||
-      lowerText.startsWith("who is") ||
-      lowerText.startsWith("tell me about")
+      lowerInput.startsWith("who is") ||
+      lowerInput.startsWith("tell me") ||
+      lowerInput.startsWith("tell me about")
     ) {
-      // Placeholder for future AI/Web search
-      const reply = `Searching for "${text}" in Wikipedia, Reddit, Internet...`;
-      this.memory.addChatMessage("Jarvis", reply);
-      return reply;
+      // Add placeholder response to memory
+      const placeholder = `Searching for "${input}" in Wikipedia, Reddit, Internet... (Functionality placeholder)`;
+      return placeholder;
     }
 
-    // Default fallback
-    const defaultReply = "I don't understand. Try asking 'who is' or 'tell me about' something.";
-    this.memory.addChatMessage("Jarvis", defaultReply);
-    return defaultReply;
-  }
-
-  /**
-   * Optional: retrieve past chat history
-   */
-  public getChatHistory() {
-    return this.memory.getChatHistory();
+    // Fallback
+    return "I couldn't find a better answer. Try rephrasing your question or ask about someone or something specific.";
   }
 }
