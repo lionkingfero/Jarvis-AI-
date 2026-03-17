@@ -7,32 +7,25 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Password Lock Overlay -->
-    <div id="passwordOverlay" class="overlay">
-        <div class="passwordBox">
+    <div id="overlay">
+        <div id="passwordContainer">
             <h2>Enter Password to Start Jarvis</h2>
             <input type="password" id="passwordInput" placeholder="Enter password">
-            <button id="passwordSubmit">Start</button>
-            <p id="passwordError" class="error"></p>
+            <button id="passwordBtn">Unlock</button>
+            <p id="passwordError"></p>
         </div>
     </div>
 
-    <!-- Full-Screen AI Interface -->
-    <div id="aiInterface" class="hidden">
-        <div class="ai-background"></div>
-
-        <!-- Chat area -->
+    <div id="jarvisContainer" class="hidden">
         <div id="chatContainer">
             <div id="messages"></div>
             <div id="inputBar">
-                <input type="text" id="userInput" placeholder="Type your message here...">
-                
-                <!-- Buttons inside the input bar -->
-                <button id="sendBtn" class="inputBtn">➤</button>
-                <button id="voiceBtn" class="inputBtn">🎤</button>
-                <button id="generateCodeBtn" class="inputBtn">💻</button>
-                <button id="generateImageBtn" class="inputBtn">🖼️</button>
-                <button id="memoryBtn" class="inputBtn">🧠</button>
+                <button id="micBtn" title="Voice Chat">🎤</button>
+                <button id="memoryBtn" title="View Memory">🧠</button>
+                <button id="codeGenBtn" title="Generate Code">💻</button>
+                <button id="imageGenBtn" title="Generate Image">🖼️</button>
+                <input type="text" id="userInput" placeholder="Type your message here">
+                <button id="sendBtn">➤</button>
             </div>
         </div>
     </div>
