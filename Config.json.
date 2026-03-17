@@ -1,0 +1,11 @@
+{
+  "projectName": "Jarvis AI",
+  "version": "1.0.0",
+  "author": "Mamar Njie",
+  "memoryPath": "./memory",
+  "defaultLanguage": "en",
+  "enableVoice": true,
+  "enableImageGeneration": true,
+  "enableCodeGeneration": true,
+  "searchSources": ["Wikipedia", "Reddit", "Internet"]
+}
