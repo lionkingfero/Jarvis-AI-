@@ -1,30 +1,38 @@
 // Password
-const correctPassword = "7366062";
-const overlay = document.getElementById('overlay');
-const passwordInput = document.getElementById('passwordInput');
-const passwordBtn = document.getElementById('passwordBtn');
-const passwordError = document.getElementById('passwordError');
-const jarvisContainer = document.getElementById('jarvisContainer');
+const passwordOverlay = document.getElementById("passwordOverlay");
+const passwordInput = document.getElementById("passwordInput");
+const passwordBtn = document.getElementById("passwordBtn");
+const passwordError = document.getElementById("passwordError");
+const jarvisContainer = document.getElementById("jarvisContainer");
 
-passwordBtn.addEventListener('click', () => {
+const correctPassword = "7366062";
+
+passwordBtn.addEventListener("click", () => {
     if(passwordInput.value === correctPassword){
-        overlay.classList.add('hidden');
-        jarvisContainer.classList.remove('hidden');
+        passwordOverlay.style.display = "none";
+        jarvisContainer.style.display = "flex";
         addMessage("Jarvis", "Hello Mamar Njie, Jarvis is online. How can I help you today?");
     } else {
         passwordError.textContent = "Incorrect password!";
     }
 });
 
-// Chat
-const messages = document.getElementById('messages');
-const userInput = document.getElementById('userInput');
-const sendBtn = document.getElementById('sendBtn');
+// Messages
+const messages = document.getElementById("messages");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
 
-sendBtn.addEventListener('click', () => handleInput());
-userInput.addEventListener('keypress', (e) => {
-    if(e.key === "Enter") handleInput();
-});
+function addMessage(sender, text){
+    const msg = document.createElement("div");
+    msg.className = "message";
+    msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
+    messages.appendChild(msg);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+// Handle input
+sendBtn.addEventListener("click", handleInput);
+userInput.addEventListener("keypress", (e)=>{ if(e.key==="Enter") handleInput(); });
 
 function handleInput(){
     const text = userInput.value.trim();
@@ -33,38 +41,55 @@ function handleInput(){
     userInput.value = "";
 
     // Custom responses
+    if(text.toLowerCase() === "hi"){
+        addMessage("Jarvis","Hello, how can I help you?");
+        return;
+    }
+    if(text.toLowerCase() === "yo jarvis wake up daddy's home"){
+        addMessage("Jarvis","Oh, it's you, Mamar Njie. Father, how are you doing? How may I help you today?");
+        return;
+    }
     if(text.toLowerCase().includes("who made you")){
-        addMessage("Jarvis", "I was made by Mamar Njie.");
-        return;
-    }
-    if(text.toLowerCase().includes("yo jarvis wake up daddy's home")){
-        addMessage("Jarvis", "Oh, it's you, Mamar Njie. Father, how are you doing? How may I help you today?");
+        addMessage("Jarvis","I was made by Mamar Njie.");
         return;
     }
 
-    // Placeholder: internet/Wikipedia/Reddit/StackOverflow fetch
-    addMessage("Jarvis", "Searching the internet... (Not implemented yet)");
+    // Wikipedia search
+    searchWikipedia(text);
 }
 
-// Helper to add messages
-function addMessage(sender, text){
-    const msg = document.createElement('div');
-    msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
-    msg.style.marginBottom = "8px";
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
+// Wikipedia Search
+function searchWikipedia(query){
+    fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`)
+    .then(res => res.json())
+    .then(data => {
+        if(data.extract){
+            addMessage("Jarvis", data.extract);
+        } else {
+            addMessage("Jarvis", "I couldn't find it on Wikipedia.");
+        }
+    }).catch(err=>{
+        addMessage("Jarvis", "Error searching Wikipedia.");
+    });
 }
 
-// Buttons (mic, memory, code, image) - placeholder
-document.getElementById('micBtn').addEventListener('click', ()=>{
-    addMessage("Jarvis","Voice Chat not implemented yet");
+// Placeholders for Reddit / general internet search
+const redditBtn = document.getElementById("memoryBtn");
+redditBtn.addEventListener("click", ()=>{
+    addMessage("Jarvis","Reddit search feature not implemented yet.");
 });
-document.getElementById('memoryBtn').addEventListener('click', ()=>{
-    addMessage("Jarvis","View Memory not implemented yet");
+
+const codeBtn = document.getElementById("codeBtn");
+codeBtn.addEventListener("click", ()=>{
+    addMessage("Jarvis","Code generation feature not implemented yet.");
 });
-document.getElementById('codeGenBtn').addEventListener('click', ()=>{
-    addMessage("Jarvis","Code Generation not implemented yet");
+
+const imageBtn = document.getElementById("imageBtn");
+imageBtn.addEventListener("click", ()=>{
+    addMessage("Jarvis","Image generation feature not implemented yet.");
 });
-document.getElementById('imageGenBtn').addEventListener('click', ()=>{
-    addMessage("Jarvis","Image Generation not implemented yet");
+
+const voiceBtn = document.getElementById("voiceBtn");
+voiceBtn.addEventListener("click", ()=>{
+    addMessage("Jarvis","Voice feature not implemented yet.");
 });
