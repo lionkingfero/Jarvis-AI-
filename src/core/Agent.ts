@@ -1,52 +1,62 @@
-import { MemoryService } from './MemoryService';
-
-interface CustomResponses {
-  [key: string]: string;
-}
+import { MemoryService } from "../core/MemoryService";
+import { TTSService } from "../core/TTSService";
 
 export class Agent {
   private memory: MemoryService;
-  private customResponses: CustomResponses;
+  private tts: TTSService;
 
-  constructor(memoryService: MemoryService) {
+  // Define custom responses
+  private customResponses: Record<string, string> = {
+    "hi": "Hello, Mamar Njie! How may I help you today?",
+    "jarvis wake up daddy's home": "Oh, it's you, Mamar Njie, father. How may I help you today?",
+    "who made you": "I was made by Mamar Njie.",
+    "tell me about your maker": "Mama Njie is a 17-year-old who is living in Gambia."
+  };
+
+  constructor(memoryService: MemoryService, ttsService: TTSService) {
     this.memory = memoryService;
-
-    // Predefined custom responses
-    this.customResponses = {
-      "hi": "Hello, Mamar Njie! How may I help you today?",
-      "jarvis wake up daddy's home": "Oh, it's you, Mamar Njie, father. How may I help you today?",
-      "who made you": "I was made by Mamar Njie.",
-      "tell me about your maker": "Mamar Njie is a 17-year-old living in Gambia."
-    };
+    this.tts = ttsService;
   }
 
-  // Main process input function
-  public async processInput(userInput: string): Promise<string> {
-    const lowerInput = userInput.toLowerCase().trim();
+  // Main method to process user input
+  public async processInput(input: string): Promise<string> {
+    const text = input.trim();
+    if (!text) return "";
 
-    // Check for custom responses first
-    if (this.customResponses[lowerInput]) {
-      this.memory.addChatMessage("You", userInput);
-      this.memory.addChatMessage("Jarvis", this.customResponses[lowerInput]);
-      return this.customResponses[lowerInput];
+    // Save user message in memory
+    this.memory.addChatMessage("User", text);
+
+    const lowerText = text.toLowerCase();
+
+    // Check for custom responses
+    if (this.customResponses[lowerText]) {
+      const reply = this.customResponses[lowerText];
+      this.memory.addChatMessage("Jarvis", reply);
+      this.tts.speak(reply);
+      return reply;
     }
 
-    // Handle search commands
+    // Handle search-like commands
     if (
-      lowerInput.startsWith("tell me") ||
-      lowerInput.startsWith("who is") ||
-      lowerInput.startsWith("tell me about")
+      lowerText.startsWith("tell me") ||
+      lowerText.startsWith("who is") ||
+      lowerText.startsWith("tell me about")
     ) {
-      const response = `Searching for "${userInput}" on Wikipedia, Reddit, and the Internet...`;
-      this.memory.addChatMessage("You", userInput);
-      this.memory.addChatMessage("Jarvis", response);
-      return response;
+      const reply = `Searching for "${text}" in Wikipedia, Reddit, Internet...`;
+      this.memory.addChatMessage("Jarvis", reply);
+      this.tts.speak(reply);
+      return reply;
     }
 
     // Default fallback
-    const fallback = "I don't understand. Try asking 'who is' or 'tell me about' something.";
-    this.memory.addChatMessage("You", userInput);
-    this.memory.addChatMessage("Jarvis", fallback);
-    return fallback;
+    const defaultReply = "I don't understand. Try 'who is' or 'tell me about' something.";
+    this.memory.addChatMessage("Jarvis", defaultReply);
+    this.tts.speak(defaultReply);
+    return defaultReply;
+  }
+
+  // Optional: get full chat history
+  public getChatHistory() {
+    return this.memory.getChatHistory();
   }
 }
