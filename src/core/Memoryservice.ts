@@ -1,62 +1,84 @@
-import { MemoryService } from "../core/MemoryService";
-import { TTSService } from "../core/TTSService";
+import fs from 'fs';
+import path from 'path';
 
-export class Agent {
-  private memory: MemoryService;
-  private tts: TTSService;
+export interface ChatMessage {
+  sender: string;
+  message: string;
+  timestamp: string;
+}
 
-  // Define custom responses
-  private customResponses: Record<string, string> = {
-    "hi": "Hello, Mamar Njie! How may I help you today?",
-    "jarvis wake up daddy's home": "Oh, it's you, Mamar Njie, father. How may I help you today?",
-    "who made you": "I was made by Mamar Njie.",
-    "tell me about your maker": "Mama Njie is a 17-year-old who is living in Gambia."
-  };
+export class MemoryService {
+  private chatHistoryPath: string;
+  private userDataPath: string;
+  private chatHistory: ChatMessage[] = [];
+  private userData: Record<string, any> = {};
 
-  constructor(memoryService: MemoryService, ttsService: TTSService) {
-    this.memory = memoryService;
-    this.tts = ttsService;
+  constructor(memoryFolder: string) {
+    // Set file paths
+    this.chatHistoryPath = path.join(memoryFolder, 'chatHistory.json');
+    this.userDataPath = path.join(memoryFolder, 'userData.json');
+
+    // Load existing files if they exist
+    this.loadChatHistory();
+    this.loadUserData();
   }
 
-  // Main method to process user input
-  public async processInput(input: string): Promise<string> {
-    const text = input.trim();
-    if (!text) return "";
-
-    // Save user message in memory
-    this.memory.addChatMessage("User", text);
-
-    const lowerText = text.toLowerCase();
-
-    // Check for custom responses
-    if (this.customResponses[lowerText]) {
-      const reply = this.customResponses[lowerText];
-      this.memory.addChatMessage("Jarvis", reply);
-      this.tts.speak(reply);
-      return reply;
+  // --- Chat History Methods ---
+  private loadChatHistory() {
+    if (fs.existsSync(this.chatHistoryPath)) {
+      const data = fs.readFileSync(this.chatHistoryPath, 'utf8');
+      try {
+        this.chatHistory = JSON.parse(data);
+      } catch {
+        this.chatHistory = [];
+      }
+    } else {
+      this.chatHistory = [];
     }
-
-    // Handle search-like commands
-    if (
-      lowerText.startsWith("tell me") ||
-      lowerText.startsWith("who is") ||
-      lowerText.startsWith("tell me about")
-    ) {
-      const reply = `Searching for "${text}" in Wikipedia, Reddit, Internet...`;
-      this.memory.addChatMessage("Jarvis", reply);
-      this.tts.speak(reply);
-      return reply;
-    }
-
-    // Default fallback
-    const defaultReply = "I don't understand. Try 'who is' or 'tell me about' something.";
-    this.memory.addChatMessage("Jarvis", defaultReply);
-    this.tts.speak(defaultReply);
-    return defaultReply;
   }
 
-  // Optional: get full chat history
-  public getChatHistory() {
-    return this.memory.getChatHistory();
+  private saveChatHistory() {
+    fs.writeFileSync(this.chatHistoryPath, JSON.stringify(this.chatHistory, null, 2));
+  }
+
+  public addChatMessage(sender: string, message: string) {
+    const chatMsg: ChatMessage = {
+      sender,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+    this.chatHistory.push(chatMsg);
+    this.saveChatHistory();
+  }
+
+  public getChatHistory(): ChatMessage[] {
+    return this.chatHistory;
+  }
+
+  // --- User Data Methods ---
+  private loadUserData() {
+    if (fs.existsSync(this.userDataPath)) {
+      const data = fs.readFileSync(this.userDataPath, 'utf8');
+      try {
+        this.userData = JSON.parse(data);
+      } catch {
+        this.userData = {};
+      }
+    } else {
+      this.userData = {};
+    }
+  }
+
+  private saveUserData() {
+    fs.writeFileSync(this.userDataPath, JSON.stringify(this.userData, null, 2));
+  }
+
+  public setUserData(key: string, value: any) {
+    this.userData[key] = value;
+    this.saveUserData();
+  }
+
+  public getUserData(key: string) {
+    return this.userData[key];
   }
 }
