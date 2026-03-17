@@ -13,14 +13,26 @@ const imageBtn = document.getElementById('image-btn');
 const memoryBtn = document.getElementById('memory-btn');
 const generateBtn = document.getElementById('generate-btn');
 
-// Password logic
+// Password logic FIXED
 passwordSubmit.addEventListener('click', () => {
   if(passwordInput.value === "7366062"){
-    passwordScreen.classList.add('hidden');
-    jarvisScreen.classList.remove('hidden');
+    // Hide password screen
+    passwordScreen.style.display = 'none';
+    // Show Jarvis screen
+    jarvisScreen.style.display = 'flex';
+    // Focus input
+    userInput.focus();
+    // Welcome message
     addMessage("Jarvis", "Hello Mamar Njie! Jarvis is online. How may I help you today?");
   } else {
     alert("Incorrect password");
+  }
+});
+
+// Allow Enter key on password input
+passwordInput.addEventListener('keypress', (e) => {
+  if(e.key === "Enter"){
+    passwordSubmit.click();
   }
 });
 
@@ -56,7 +68,6 @@ function processInput(){
       lowerText.startsWith("who is") ||
       lowerText.startsWith("tell me about")
   ){
-    // Placeholder for internet/Wikipedia/Reddit search
     addMessage("Jarvis", `Searching for "${text}" in Wikipedia, Reddit, Internet...`);
   } else {
     addMessage("Jarvis", "I don't understand. Try 'who is' or 'tell me about' something.");
