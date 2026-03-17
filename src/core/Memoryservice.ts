@@ -1,84 +1,98 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-export interface ChatMessage {
+interface ChatMessage {
   sender: string;
   message: string;
   timestamp: string;
 }
 
+interface UserData {
+  username?: string;
+  [key: string]: any;
+}
+
 export class MemoryService {
-  private chatHistoryPath: string;
-  private userDataPath: string;
+  private chatHistoryFile: string;
+  private userDataFile: string;
   private chatHistory: ChatMessage[] = [];
-  private userData: Record<string, any> = {};
+  private userData: UserData = {};
 
-  constructor(memoryFolder: string) {
-    // Set file paths
-    this.chatHistoryPath = path.join(memoryFolder, 'chatHistory.json');
-    this.userDataPath = path.join(memoryFolder, 'userData.json');
+  constructor() {
+    // Paths to your JSON files
+    this.chatHistoryFile = path.join(__dirname, "../../memory/chatHistory.json");
+    this.userDataFile = path.join(__dirname, "../../memory/userdata.json");
 
-    // Load existing files if they exist
-    this.loadChatHistory();
-    this.loadUserData();
+    this.loadMemory();
   }
 
-  // --- Chat History Methods ---
-  private loadChatHistory() {
-    if (fs.existsSync(this.chatHistoryPath)) {
-      const data = fs.readFileSync(this.chatHistoryPath, 'utf8');
-      try {
-        this.chatHistory = JSON.parse(data);
-      } catch {
-        this.chatHistory = [];
+  // Load chat history and user data from files
+  private loadMemory() {
+    try {
+      if (fs.existsSync(this.chatHistoryFile)) {
+        const data = fs.readFileSync(this.chatHistoryFile, "utf-8");
+        this.chatHistory = JSON.parse(data) || [];
       }
-    } else {
-      this.chatHistory = [];
+
+      if (fs.existsSync(this.userDataFile)) {
+        const data = fs.readFileSync(this.userDataFile, "utf-8");
+        this.userData = JSON.parse(data) || {};
+      }
+    } catch (err) {
+      console.error("Error loading memory:", err);
     }
   }
 
+  // Save chat history to file
   private saveChatHistory() {
-    fs.writeFileSync(this.chatHistoryPath, JSON.stringify(this.chatHistory, null, 2));
+    try {
+      fs.writeFileSync(this.chatHistoryFile, JSON.stringify(this.chatHistory, null, 2));
+    } catch (err) {
+      console.error("Error saving chat history:", err);
+    }
   }
 
+  // Save user data to file
+  private saveUserData() {
+    try {
+      fs.writeFileSync(this.userDataFile, JSON.stringify(this.userData, null, 2));
+    } catch (err) {
+      console.error("Error saving user data:", err);
+    }
+  }
+
+  // Add a message to chat history
   public addChatMessage(sender: string, message: string) {
-    const chatMsg: ChatMessage = {
+    const chatMessage: ChatMessage = {
       sender,
       message,
       timestamp: new Date().toISOString(),
     };
-    this.chatHistory.push(chatMsg);
+    this.chatHistory.push(chatMessage);
     this.saveChatHistory();
   }
 
+  // Retrieve full chat history
   public getChatHistory(): ChatMessage[] {
     return this.chatHistory;
   }
 
-  // --- User Data Methods ---
-  private loadUserData() {
-    if (fs.existsSync(this.userDataPath)) {
-      const data = fs.readFileSync(this.userDataPath, 'utf8');
-      try {
-        this.userData = JSON.parse(data);
-      } catch {
-        this.userData = {};
-      }
-    } else {
-      this.userData = {};
-    }
+  // Get user data
+  public getUserData(): UserData {
+    return this.userData;
   }
 
-  private saveUserData() {
-    fs.writeFileSync(this.userDataPath, JSON.stringify(this.userData, null, 2));
-  }
-
-  public setUserData(key: string, value: any) {
-    this.userData[key] = value;
+  // Update user data
+  public updateUserData(data: UserData) {
+    this.userData = { ...this.userData, ...data };
     this.saveUserData();
   }
 
-  public getUserData(key: string) {
-    return this.userData[key];
+  // Optional: clear memory
+  public clearMemory() {
+    this.chatHistory = [];
+    this.userData = {};
+    this.saveChatHistory();
+    this.saveUserData();
   }
 }
