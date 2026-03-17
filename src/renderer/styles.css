@@ -1,145 +1,106 @@
-/* ==================== General Body ==================== */
+/* General body */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom right, #0f172a, #1e293b);
+  color: #e2e8f0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* ==================== Jarvis Container ==================== */
+/* Jarvis main container */
 #jarvis-screen {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    max-width: 900px;
-    height: 95vh;
-    background: rgba(0, 0, 0, 0.85);
-    border-radius: 15px;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 800px;
+  height: 90%;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  overflow: hidden;
 }
 
-/* ==================== Header ==================== */
+/* Header */
 .header {
-    text-align: center;
-    padding: 20px;
-    background: rgba(0, 255, 255, 0.1);
-    font-size: 2rem;
-    font-weight: bold;
-    color: #00ffff;
-    border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  font-size: 2rem;
+  font-weight: bold;
+  color: #38bdf8;
+  letter-spacing: 1px;
+  text-shadow: 0 0 5px #38bdf8;
 }
 
-/* ==================== Chat Window ==================== */
+/* Chat window */
 #chat-window {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    background: rgba(10, 10, 20, 0.9);
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid #334155;
+  border-bottom: 1px solid #334155;
 }
 
-#messages div {
-    margin-bottom: 12px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    max-width: 80%;
-    word-wrap: break-word;
+#messages .message {
+  margin: 8px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  max-width: 80%;
+  word-wrap: break-word;
+  line-height: 1.4;
 }
 
-/* User messages */
-#messages div.user {
-    background: rgba(0, 255, 255, 0.2);
-    align-self: flex-end;
-    color: #00fff0;
+#messages .user {
+  background: #134e4a;
+  color: #22c55e;
+  align-self: flex-end;
 }
 
-/* Jarvis messages */
-#messages div.jarvis {
-    background: rgba(0, 0, 0, 0.4);
-    align-self: flex-start;
-    color: #00ffff;
+#messages .ai {
+  background: #1e3a8a;
+  color: #60a5fa;
+  align-self: flex-start;
 }
 
-/* ==================== Input Bar ==================== */
+/* Input bar */
 .input-bar {
-    display: flex;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-    align-items: center;
-    border-top: 2px solid rgba(0, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  gap: 5px;
 }
 
 .input-bar input {
-    flex: 1;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: none;
-    background: rgba(0,0,0,0.6);
-    color: #00fff0;
-    font-size: 1rem;
-    outline: none;
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-size: 1rem;
+}
+
+.input-bar input::placeholder {
+  color: #94a3b8;
 }
 
 .input-bar button {
-    margin-left: 8px;
-    padding: 10px 14px;
-    border: none;
-    border-radius: 8px;
-    background: rgba(0, 255, 255, 0.2);
-    color: #00ffff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #0ea5e9;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .input-bar button:hover {
-    background: rgba(0, 255, 255, 0.4);
-    transform: scale(1.05);
-}
-
-/* ==================== Scrollbar ==================== */
-#chat-window::-webkit-scrollbar {
-    width: 10px;
-}
-
-#chat-window::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.2);
-    border-radius: 5px;
-}
-
-#chat-window::-webkit-scrollbar-thumb {
-    background: #00ffff;
-    border-radius: 5px;
-}
-
-/* ==================== Buttons Special ==================== */
-#mic-btn {
-    background: rgba(255, 0, 255, 0.2);
-}
-
-#image-btn {
-    background: rgba(0, 255, 0, 0.2);
-}
-
-#memory-btn {
-    background: rgba(255, 255, 0, 0.2);
-}
-
-#generate-btn {
-    background: rgba(0, 255, 255, 0.2);
-}
-
-/* ==================== Responsive ==================== */
-@media screen and (max-width: 600px) {
-    .header { font-size: 1.5rem; padding: 15px; }
-    .input-bar input { font-size: 0.9rem; }
-    .input-bar button { padding: 8px 10px; font-size: 0.9rem; }
-    #jarvis-screen { width: 95%; height: 95vh; }
+  background: #0284c7;
+  transform: scale(1.05);
 }
