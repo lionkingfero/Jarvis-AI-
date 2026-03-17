@@ -47,16 +47,22 @@ async function send(){
   let lower = text.toLowerCase();
 
   // Custom commands
-  if(lower.includes("hi")){
+  if
     jarvisReply("Hi, how may I help you today?");
     return;
   }
 
   if(lower.includes("wake up")){
+  jarvisReply("Oh, it's you Mamar Njie, my creator. How are you doing? How may I help you today?");
+  return;
+  }(lower.includes("wake up")){
     jarvisReply("Oh, it's you Mamar njie, Jarvis father. How are you doing? How may I help you today?");
     return;
   }
-
+if(lower.includes("who made you")){
+  jarvisReply("I was created by my Father, Mamar Njie.");
+  return;
+}
   // CLEAN INPUT → makes sentences work
   let query = cleanInput(text);
 
