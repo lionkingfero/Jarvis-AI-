@@ -81,4 +81,35 @@ if(lower.includes("who made you")){
   } catch {
     jarvisReply("Error searching.");
   }
+}// 🎤 VOICE
+function startListening(){
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = "en-US";
+
+  recognition.onresult = function(event){
+    let text = event.results[0][0].transcript;
+    document.getElementById("input").value = text;
+    send();
+  };
+
+  recognition.start();
+}
+
+
+// 🖼 IMAGE (placeholder for now)
+function generateImage(){
+  let text = document.getElementById("input").value;
+  jarvisReply("Generating image for: " + text + " (coming in V6)");
+}
+
+
+// 🧠 MEMORY
+let memory = [];
+
+function remember(){
+  let text = document.getElementById("input").value;
+  if(text){
+    memory.push(text);
+    jarvisReply("I will remember that.");
+  }
 }
