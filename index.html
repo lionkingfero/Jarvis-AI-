@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jarvis AI</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jarvis AI</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- PASSWORD SCREEN -->
-  <div id="password-screen">
+<!-- Password screen -->
+<div id="password-screen">
+  <div class="password-box">
     <h2>Enter password to start Jarvis</h2>
-    <input type="password" id="password-input" placeholder="Enter password">
-    <button id="password-btn">Enter</button>
+    <input type="password" id="password-input" placeholder="Password">
+    <button id="password-submit">Enter</button>
   </div>
+</div>
 
-  <!-- MAIN JARVIS SCREEN -->
-  <div id="jarvis-screen" class="hidden">
-    <div id="chat-window">
-      <div id="messages"></div>
-    </div>
-
-    <!-- INPUT BAR -->
-    <div id="input-bar">
-      <button id="mic-btn" onclick="startListening()">🎤</button>
-      <input type="text" id="input" placeholder="Type your message here...">
-      <button id="send-btn" onclick="sendMessage()">➤</button>
-      <button id="image-btn" onclick="generateImage()">🖼</button>
-      <button id="memory-btn" onclick="remember()">🧠</button>
-      <button id="code-btn" onclick="generateCode()">⚡</button>
-    </div>
+<!-- Jarvis main screen -->
+<div id="jarvis-screen" class="hidden">
+  <div class="header">
+    <h1>Jarvis AI</h1>
   </div>
+  <div id="chat-window">
+    <div id="messages"></div>
+  </div>
+  <div class="input-bar">
+    <input type="text" id="user-input" placeholder="Type your message here...">
+    <button id="send-btn">→</button>
+    <button id="mic-btn">🎤</button>
+    <button id="image-btn">+</button>
+    <button id="memory-btn">🤖</button>
+    <button id="generate-btn">💻</button>
+  </div>
+</div>
 
-  <script src="scripts.js"></script>
+<script src="scripts.js"></script>
 </body>
-</html>
+  </html>
