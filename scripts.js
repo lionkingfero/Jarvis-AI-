@@ -1,100 +1,79 @@
-// PASSWORD
-const passwordScreen = document.getElementById("password-screen");
-const passwordInput = document.getElementById("password-input");
-const passwordBtn = document.getElementById("password-btn");
-const jarvisScreen = document.getElementById("jarvis-screen");
+// Elements
+const passwordScreen = document.getElementById('password-screen');
+const jarvisScreen = document.getElementById('jarvis-screen');
+const passwordInput = document.getElementById('password-input');
+const passwordSubmit = document.getElementById('password-submit');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const messages = document.getElementById('messages');
 
-passwordBtn.addEventListener("click", () => {
-  if(passwordInput.value === "7366062"){
-    passwordScreen.classList.add("hidden");
-    jarvisScreen.classList.remove("hidden");
-    jarvisReply("Hello Mamar Njie, Jarvis is online. How can I help you today?");
-  } else {
-    alert("Incorrect password!");
-  }
+// Buttons (mic, image, memory, generate)
+const micBtn = document.getElementById('mic-btn');
+const imageBtn = document.getElementById('image-btn');
+const memoryBtn = document.getElementById('memory-btn');
+const generateBtn = document.getElementById('generate-btn');
+
+// Password logic
+passwordSubmit.addEventListener('click', () => {
+    if(passwordInput.value === "7366062") {
+        passwordScreen.classList.add('hidden');
+        jarvisScreen.classList.remove('hidden');
+        addMessage("Jarvis", "Hello Mamar Njie! Jarvis is online. How may I help you today?");
+    } else {
+        alert("Incorrect password");
+    }
 });
 
-// MESSAGES
-const messagesDiv = document.getElementById("messages");
+// Custom responses
+const customResponses = {
+    "hi": "Hello, Mamar Njie! How may I help you today?",
+    "jarvis wake up daddy's home": "Oh, it's you, Mamar Njie, father. How may I help you today?",
+    "who made you": "I was made by Mamar Njie.",
+    "tell me about your maker": "Mama Njie is a 17-year-old who is living in Gambia."
+};
 
-function jarvisReply(text){
-  const div = document.createElement("div");
-  div.className = "message";
-  div.innerText = text;
-  messagesDiv.appendChild(div);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+// Function to add messages to chat
+function addMessage(sender, text){
+    const msg = document.createElement('div');
+    msg.innerHTML = `<b>${sender}:</b> ${text}`;
+    messages.appendChild(msg);
+    messages.scrollTop = messages.scrollHeight;
 }
 
-// SEND MESSAGE
-function sendMessage(){
-  const input = document.getElementById("input");
-  const text = input.value;
-  if(!text) return;
-  const div = document.createElement("div");
-  div.className = "message";
-  div.innerText = "You: " + text;
-  messagesDiv.appendChild(div);
-  input.value = "";
+// Process user input
+function processInput(){
+    const text = userInput.value.trim();
+    if(text === "") return;
 
-  // CUSTOM RESPONSES
-  const lower = text.toLowerCase();
+    addMessage("You", text);
 
-  if(lower.includes("who made you")){
-    jarvisReply("I was created by Mamar Njie.");
-    return;
-  }
+    const lowerText = text.toLowerCase();
 
-  if(lower.includes("wake up")){
-    jarvisReply("Oh, it's you Mamar Njie, my creator. How are you doing? How may I help you today?");
-    return;
-  }
+    // Check custom responses first
+    if(customResponses[lowerText]) {
+        addMessage("Jarvis", customResponses[lowerText]);
+    } else if(
+        lowerText.startsWith("tell me") || 
+        lowerText.startsWith("who is") || 
+        lowerText.startsWith("tell me about")
+    ){
+        // Placeholder for web search
+        addMessage("Jarvis", `Searching for "${text}"...`);
+    } else {
+        addMessage("Jarvis", "I don't understand. Try asking 'who is' or 'tell me about' something.");
+    }
 
-  if(lower.includes("hi")){
-    jarvisReply("Hello Mamar Njie! How may I help you today?");
-    return;
-  }
-
-  // SEARCH PLACEHOLDER
-  jarvisReply(`Searching Wikipedia & Internet for "${text}"... Functionality placeholder.`);
+    userInput.value = "";
 }
 
-// MEMORY
-let memory = [];
+// Send button
+sendBtn.addEventListener('click', processInput);
+userInput.addEventListener('keypress', e => {
+    if(e.key === "Enter") processInput();
+});
 
-function remember(){
-  const input = document.getElementById("input").value;
-  if(input){
-    memory.push(input);
-    jarvisReply("I will remember that.");
-  }
-}
-
-// IMAGE PLACEHOLDER
-function generateImage(){
-  const input = document.getElementById("input").value;
-  if(input){
-    jarvisReply("Generating image for: " + input + " (Functionality placeholder)");
-  }
-}
-
-// CODE GENERATOR PLACEHOLDER
-function generateCode(){
-  const input = document.getElementById("input").value;
-  if(input){
-    jarvisReply("Generating code for: " + input + " (Functionality placeholder)");
-  }
-}
-
-// VOICE
-function startListening(){
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = "en-US";
-
-  recognition.onresult = function(event){
-    let text = event.results[0][0].transcript;
-    document.getElementById("input").value = text;
-    sendMessage();
-  }
-
-  recognition.start();
-}
+// Placeholder button actions
+micBtn.addEventListener('click', ()=>{ addMessage("Jarvis","Voice input feature not implemented yet."); });
+imageBtn.addEventListener('click', ()=>{ addMessage("Jarvis","Image generation feature not implemented yet."); });
+memoryBtn.addEventListener('click', ()=>{ addMessage("Jarvis","Memory feature not implemented yet."); });
+generateBtn.addEventListener('click', ()=>{ addMessage("Jarvis","Code generation feature not implemented yet."); });
