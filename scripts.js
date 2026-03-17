@@ -1,93 +1,78 @@
-// Password Logic
-const passwordScreen = document.getElementById("password-screen");
-const jarvisContainer = document.getElementById("jarvis-container");
-const passwordInput = document.getElementById("password-input");
-const passwordSubmit = document.getElementById("password-submit");
-const passwordError = document.getElementById("password-error");
 const PASSWORD = "7366062";
 
-// Chat Elements
-const messages = document.getElementById("messages");
-const userInput = document.getElementById("user-input");
-const sendButton = document.getElementById("send-button");
-const voiceButton = document.getElementById("voice-button");
-const memoryButton = document.getElementById("memory-button");
-const imageButton = document.getElementById("image-button");
-const codeButton = document.getElementById("code-button");
+const passwordScreen = document.getElementById("password-screen");
+const jarvis = document.getElementById("jarvis");
 
-// Local Memory Storage
-let memory = JSON.parse(localStorage.getItem("jarvisMemory")) || [];
-
-// Custom Responses
-const customResponses = {
-  "hi": "Hello, how can I help you today?",
-  "yo jarvis wake up daddy's home": "Oh, it's you, Mamar Njie. Father, how are you doing? How may I help you today?",
-  "who made you": "I was made by Mamar Njie."
+document.getElementById("password-submit").onclick = () => {
+  if(document.getElementById("password-input").value === PASSWORD){
+    passwordScreen.style.display = "none";
+    jarvis.classList.remove("hidden");
+    jarvisReply("Hello Mohammed, Jarvis is online.");
+  } else {
+    document.getElementById("error").innerText = "Wrong password";
+  }
 };
 
-// Password Event
-passwordSubmit.addEventListener("click", () => {
-  if(passwordInput.value === PASSWORD){
-    passwordScreen.classList.add("hidden");
-    jarvisContainer.classList.remove("hidden");
-    addJarvisMessage("Hello Mamar Njie, Jarvis is online. How can I help you today?");
-  } else {
-    passwordError.textContent = "Wrong password, try again.";
-  }
-});
-
-// Send Message Function
-function addUserMessage(text){
-  memory.push({type:"user", text});
-  localStorage.setItem("jarvisMemory", JSON.stringify(memory));
+function addMessage(text, type){
   const msg = document.createElement("div");
-  msg.classList.add("message", "user");
-  msg.textContent = text;
-  messages.appendChild(msg);
-  messages.scrollTop = messages.scrollHeight;
+  msg.className = type;
+  msg.innerText = text;
+  document.getElementById("messages").appendChild(msg);
 }
 
-// Jarvis Reply Function
-function addJarvisMessage(text){
-  memory.push({type:"jarvis", text});
-  localStorage.setItem("jarvisMemory", JSON.stringify(memory));
-  const msg = document.createElement("div");
-  msg.classList.add("message", "jarvis");
-  msg.textContent = text;
-  messages.appendChild(msg);
-  messages.scrollTop = messages.scrollHeight;
-}
+function userMsg(text){ addMessage(text, "user"); }
+function jarvisReply(text){ addMessage(text, "jarvis"); }
 
-// Process Input
-function processInput(text){
+function cleanInput(text){
   text = text.toLowerCase();
-  if(customResponses[text]){
-    addJarvisMessage(customResponses[text]);
-  } else {
-    addJarvisMessage(`Searching Wikipedia/Internet for "${text}"... (functionality placeholder)`);
-  }
+
+  // remove extra words
+  text = text.replace("tell me about","")
+             .replace("who is","")
+             .replace("what is","")
+             .replace("search","")
+             .replace("jarvis","")
+             .trim();
+
+  return text;
 }
 
-// Event Listeners
-sendButton.addEventListener("click", () => {
-  const text = userInput.value.trim();
-  if(text === "") return;
-  addUserMessage(text);
-  processInput(text);
-  userInput.value = "";
-});
-userInput.addEventListener("keypress", (e) => {
-  if(e.key === "Enter") sendButton.click();
-});
+async function send(){
+  let text = document.getElementById("input").value;
+  if(!text) return;
 
-// Placeholder Button Functions
-voiceButton.addEventListener("click", () => alert("Voice feature not implemented yet"));
-memoryButton.addEventListener("click", () => alert("Memory feature not implemented yet"));
-imageButton.addEventListener("click", () => alert("Image feature not implemented yet"));
-codeButton.addEventListener("click", () => alert("Code generation not implemented yet"));
+  userMsg(text);
+  document.getElementById("input").value = "";
 
-// Load previous memory
-memory.forEach(m => {
-  if(m.type === "user") addUserMessage(m.text);
-  else addJarvisMessage(m.text);
-});
+  let lower = text.toLowerCase();
+
+  // Custom commands
+  if(lower.includes("hi")){
+    jarvisReply("Hi, how may I help you today?");
+    return;
+  }
+
+  if(lower.includes("wake up")){
+    jarvisReply("Oh, it's you Mohammed, Jarvis father. How are you doing? How may I help you today?");
+    return;
+  }
+
+  // CLEAN INPUT → makes sentences work
+  let query = cleanInput(text);
+
+  try{
+    jarvisReply("Searching...");
+
+    let res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+    let data = await res.json();
+
+    if(data.extract){
+      jarvisReply(data.extract);
+    } else {
+      jarvisReply("I couldn't find anything.");
+    }
+
+  } catch {
+    jarvisReply("Error searching.");
+  }
+}
