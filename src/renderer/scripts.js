@@ -1,13 +1,11 @@
 import { MemoryService } from "./core/MemoryService";
 import { LLMService } from "./core/LLMService";
 import { Agent } from "./core/Agent";
-import { TTSService } from "./core/TTSService";
 
 // Initialize services
 const memory = new MemoryService();
 const llm = new LLMService(memory);
 const agent = new Agent(memory, llm);
-const tts = new TTSService();
 
 // Elements
 const userInput = document.getElementById("user-input") as HTMLInputElement;
@@ -20,17 +18,12 @@ const memoryBtn = document.getElementById("memory-btn") as HTMLButtonElement;
 const generateBtn = document.getElementById("generate-btn") as HTMLButtonElement;
 
 // Add message to chat window
-function addMessage(sender: "You" | "Jarvis", text: string) {
-  const div = document.createElement("div");
-  div.classList.add("message", sender === "You" ? "user" : "ai");
-  div.innerHTML = `<b>${sender}:</b> ${text}`;
-  messages.appendChild(div);
+function addMessage(sender: string, text: string) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender === "You" ? "user" : "ai");
+  msg.innerHTML = `<b>${sender}:</b> ${text}`;
+  messages.appendChild(msg);
   messages.scrollTop = messages.scrollHeight;
-
-  // Jarvis speaks if it's him
-  if (sender === "Jarvis") {
-    tts.speak(text);
-  }
 }
 
 // Process user input
