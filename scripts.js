@@ -7,7 +7,7 @@ document.getElementById("password-submit").onclick = () => {
   if(document.getElementById("password-input").value === PASSWORD){
     passwordScreen.style.display = "none";
     jarvis.classList.remove("hidden");
-    jarvisReply("Hello Mohammed, Jarvis is online.");
+    jarvisReply("Hello Mamar njie, Jarvis is online.");
   } else {
     document.getElementById("error").innerText = "Wrong password";
   }
@@ -53,7 +53,7 @@ async function send(){
   }
 
   if(lower.includes("wake up")){
-    jarvisReply("Oh, it's you Mohammed, Jarvis father. How are you doing? How may I help you today?");
+    jarvisReply("Oh, it's you Mamar njie, Jarvis father. How are you doing? How may I help you today?");
     return;
   }
 
