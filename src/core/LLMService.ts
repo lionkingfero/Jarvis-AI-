@@ -1,38 +1,26 @@
-// LLMService.ts
-// Handles AI thinking / responses (LLM = Large Language Model)
+import { MemoryService } from './MemoryService';
 
 export class LLMService {
-    constructor() {
-        console.log("LLMService initialized");
-    }
+  private memory: MemoryService;
 
-    async generateResponse(input: string): Promise<string> {
-        console.log(`LLM processing: ${input}`);
+  constructor(memoryService: MemoryService) {
+    this.memory = memoryService;
+  }
 
-        const lower = input.toLowerCase();
+  /**
+   * Mock function to simulate AI response.
+   * In the future, you can connect this to real AI APIs.
+   */
+  public async getAnswer(query: string): Promise<string> {
+    // Save the user query
+    this.memory.addChatMessage("You", query);
 
-        // Custom responses
-        if (lower.includes("who made you")) {
-            return "I was made by Mamar Njie.";
-        }
+    // For now, simulate searching the web/Wikipedia/Reddit
+    let response = `Searching for "${query}" on Wikipedia, Reddit, and the Internet...`;
 
-        if (lower.includes("hello") || lower.includes("hi")) {
-            return "Hello Mamar Njie! How may I help you today?";
-        }
+    // Save the AI response
+    this.memory.addChatMessage("Jarvis", response);
 
-        if (lower.includes("jarvis wake up")) {
-            return "Oh, it's you Mamar Njie, father. How may I help you today?";
-        }
-
-        if (lower.includes("who is spiderman")) {
-            return "Spider-Man is a fictional superhero created by Marvel.";
-        }
-
-        if (lower.includes("who made marvel")) {
-            return "Marvel was created by Stan Lee and others.";
-        }
-
-        // Default behavior (search style like you wanted)
-        return `Searching for ${input}...`;
-    }
+    return response;
+  }
 }
