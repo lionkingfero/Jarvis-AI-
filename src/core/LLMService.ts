@@ -1,4 +1,4 @@
-import { MemoryService } from './MemoryService';
+import { MemoryService } from "./MemoryService";
 
 export class LLMService {
   private memory: MemoryService;
@@ -8,19 +8,47 @@ export class LLMService {
   }
 
   /**
-   * Mock function to simulate AI response.
-   * In the future, you can connect this to real AI APIs.
+   * Generate a response for the user input.
+   * Currently uses placeholder logic but ready for AI/Web API integration.
    */
-  public async getAnswer(query: string): Promise<string> {
-    // Save the user query
-    this.memory.addChatMessage("You", query);
+  public async generateResponse(input: string): Promise<string> {
+    const text = input.trim();
+    if (!text) return "";
 
-    // For now, simulate searching the web/Wikipedia/Reddit
-    let response = `Searching for "${query}" on Wikipedia, Reddit, and the Internet...`;
+    // Save user message in memory
+    this.memory.addChatMessage("User", text);
 
-    // Save the AI response
-    this.memory.addChatMessage("Jarvis", response);
+    const lowerText = text.toLowerCase();
 
-    return response;
+    // Custom commands handled here (optional redundancy with Agent)
+    if (lowerText.includes("who made you")) {
+      const reply = "I was made by Mamar Njie.";
+      this.memory.addChatMessage("Jarvis", reply);
+      return reply;
+    }
+
+    // Handle general search commands
+    if (
+      lowerText.startsWith("tell me") ||
+      lowerText.startsWith("who is") ||
+      lowerText.startsWith("tell me about")
+    ) {
+      // Placeholder for future AI/Web search
+      const reply = `Searching for "${text}" in Wikipedia, Reddit, Internet...`;
+      this.memory.addChatMessage("Jarvis", reply);
+      return reply;
+    }
+
+    // Default fallback
+    const defaultReply = "I don't understand. Try asking 'who is' or 'tell me about' something.";
+    this.memory.addChatMessage("Jarvis", defaultReply);
+    return defaultReply;
+  }
+
+  /**
+   * Optional: retrieve past chat history
+   */
+  public getChatHistory() {
+    return this.memory.getChatHistory();
   }
 }
