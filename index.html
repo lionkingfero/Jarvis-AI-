@@ -1,35 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jarvis AI</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jarvis AI</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="overlay">
-        <div id="passwordContainer">
-            <h2>Enter Password to Start Jarvis</h2>
-            <input type="password" id="passwordInput" placeholder="Enter password">
-            <button id="passwordBtn">Unlock</button>
-            <p id="passwordError"></p>
+<!-- Password Overlay -->
+<div id="passwordOverlay">
+    <div id="passwordBox">
+        <h2>Enter Password to Start Jarvis</h2>
+        <input type="password" id="passwordInput" placeholder="Enter password">
+        <button id="passwordBtn">Start</button>
+        <p id="passwordError"></p>
+    </div>
+</div>
+
+<!-- Jarvis AI Container -->
+<div id="jarvisContainer">
+    <div id="chatArea">
+        <div id="messages"></div>
+        <div id="inputArea">
+            <input type="text" id="userInput" placeholder="Type your message here">
+            <button id="sendBtn">&#9658;</button>
+            <button id="voiceBtn">🎤</button>
+            <button id="memoryBtn">🧠</button>
+            <button id="codeBtn">💻</button>
+            <button id="imageBtn">📷</button>
         </div>
     </div>
+</div>
 
-    <div id="jarvisContainer" class="hidden">
-        <div id="chatContainer">
-            <div id="messages"></div>
-            <div id="inputBar">
-                <button id="micBtn" title="Voice Chat">🎤</button>
-                <button id="memoryBtn" title="View Memory">🧠</button>
-                <button id="codeGenBtn" title="Generate Code">💻</button>
-                <button id="imageGenBtn" title="Generate Image">🖼️</button>
-                <input type="text" id="userInput" placeholder="Type your message here">
-                <button id="sendBtn">➤</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="scripts.js"></script>
+<script src="scripts.js"></script>
 </body>
 </html>
