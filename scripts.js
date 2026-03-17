@@ -1,95 +1,108 @@
-// Password
-const passwordOverlay = document.getElementById("passwordOverlay");
-const passwordInput = document.getElementById("passwordInput");
-const passwordBtn = document.getElementById("passwordBtn");
-const passwordError = document.getElementById("passwordError");
-const jarvisContainer = document.getElementById("jarvisContainer");
+// Password protection
+const passwordScreen = document.getElementById("password-screen");
+const jarvisContainer = document.getElementById("jarvis-container");
+const passwordInput = document.getElementById("password-input");
+const passwordSubmit = document.getElementById("password-submit");
+const passwordError = document.getElementById("password-error");
+const PASSWORD = "7366062";
 
-const correctPassword = "7366062";
-
-passwordBtn.addEventListener("click", () => {
-    if(passwordInput.value === correctPassword){
-        passwordOverlay.style.display = "none";
-        jarvisContainer.style.display = "flex";
-        addMessage("Jarvis", "Hello Mamar Njie, Jarvis is online. How can I help you today?");
-    } else {
-        passwordError.textContent = "Incorrect password!";
-    }
+passwordSubmit.addEventListener("click", () => {
+  if(passwordInput.value === PASSWORD){
+    passwordScreen.classList.add("hidden");
+    jarvisContainer.classList.remove("hidden");
+    addJarvisMessage("Hello Mamar Njie, Jarvis is online. How can I help you today?");
+  } else {
+    passwordError.textContent = "Wrong password, try again.";
+  }
 });
 
-// Messages
-const messages = document.getElementById("messages");
-const userInput = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
+// Elements
+const userInput = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
+const messagesDiv = document.getElementById("messages");
 
-function addMessage(sender, text){
-    const msg = document.createElement("div");
-    msg.className = "message";
-    msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
+// Custom responses
+const customResponses = {
+  "hi": "Hello! How can I help you today?",
+  "yo jarvis wake up daddy's home": "Oh, it's you, Mamar Njie. Father, how are you doing? How may I assist you today?",
+  "who made you": "I was made by Mamar Njie."
+};
+
+// Helper: add message
+function addMessage(text, sender){
+  const div = document.createElement("div");
+  div.className = "message " + sender;
+  div.textContent = text;
+  messagesDiv.appendChild(div);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// Handle input
-sendBtn.addEventListener("click", handleInput);
-userInput.addEventListener("keypress", (e)=>{ if(e.key==="Enter") handleInput(); });
-
-function handleInput(){
-    const text = userInput.value.trim();
-    if(!text) return;
-    addMessage("You", text);
-    userInput.value = "";
-
-    // Custom responses
-    if(text.toLowerCase() === "hi"){
-        addMessage("Jarvis","Hello, how can I help you?");
-        return;
-    }
-    if(text.toLowerCase() === "yo jarvis wake up daddy's home"){
-        addMessage("Jarvis","Oh, it's you, Mamar Njie. Father, how are you doing? How may I help you today?");
-        return;
-    }
-    if(text.toLowerCase().includes("who made you")){
-        addMessage("Jarvis","I was made by Mamar Njie.");
-        return;
-    }
-
-    // Wikipedia search
-    searchWikipedia(text);
+// Add Jarvis message
+function addJarvisMessage(text){
+  addMessage(text, "jarvis-msg");
 }
 
-// Wikipedia Search
-function searchWikipedia(query){
-    fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`)
+// Add user message
+function addUserMessage(text){
+  addMessage(text, "user-msg");
+}
+
+// Process input
+function processInput(input){
+  const text = input.toLowerCase().trim();
+
+  // Custom response
+  if(customResponses[text]){
+    addJarvisMessage(customResponses[text]);
+    return;
+  }
+
+  // Extract main keyword for Wikipedia
+  let keyword = text.replace(/(who is |tell me about |what is |please )/gi, "").trim();
+
+  if(keyword.length === 0){
+    addJarvisMessage("I couldn't understand. Can you rephrase?");
+    return;
+  }
+
+  // Wikipedia fetch
+  fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(keyword)}`)
     .then(res => res.json())
     .then(data => {
-        if(data.extract){
-            addMessage("Jarvis", data.extract);
-        } else {
-            addMessage("Jarvis", "I couldn't find it on Wikipedia.");
-        }
-    }).catch(err=>{
-        addMessage("Jarvis", "Error searching Wikipedia.");
+      if(data.extract){
+        addJarvisMessage(data.extract);
+      } else {
+        addJarvisMessage(`I couldn't find information about "${keyword}".`);
+      }
+    })
+    .catch(() => {
+      addJarvisMessage("Error fetching information.");
     });
 }
 
-// Placeholders for Reddit / general internet search
-const redditBtn = document.getElementById("memoryBtn");
-redditBtn.addEventListener("click", ()=>{
-    addMessage("Jarvis","Reddit search feature not implemented yet.");
+// Send message
+sendBtn.addEventListener("click", () => {
+  const text = userInput.value;
+  if(text === "") return;
+  addUserMessage(text);
+  processInput(text);
+  userInput.value = "";
 });
 
-const codeBtn = document.getElementById("codeBtn");
-codeBtn.addEventListener("click", ()=>{
-    addMessage("Jarvis","Code generation feature not implemented yet.");
+userInput.addEventListener("keypress", (e) => {
+  if(e.key === "Enter") sendBtn.click();
 });
 
-const imageBtn = document.getElementById("imageBtn");
-imageBtn.addEventListener("click", ()=>{
-    addMessage("Jarvis","Image generation feature not implemented yet.");
+// Buttons placeholders
+document.getElementById("voice-btn").addEventListener("click", () => {
+  addJarvisMessage("Voice chat not implemented yet.");
 });
-
-const voiceBtn = document.getElementById("voiceBtn");
-voiceBtn.addEventListener("click", ()=>{
-    addMessage("Jarvis","Voice feature not implemented yet.");
+document.getElementById("memory-btn").addEventListener("click", () => {
+  addJarvisMessage("Memory view not implemented yet.");
+});
+document.getElementById("code-btn").addEventListener("click", () => {
+  addJarvisMessage("Code generation not implemented yet.");
+});
+document.getElementById("image-btn").addEventListener("click", () => {
+  addJarvisMessage("Image generation not implemented yet.");
 });
