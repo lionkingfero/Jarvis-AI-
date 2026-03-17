@@ -1,49 +1,47 @@
-// memoryservice.ts
-// Handles saving and loading memory (chat history + user data)
+import fs from 'fs';
+import path from 'path';
+
+interface ChatMessage {
+  sender: string;
+  message: string;
+  timestamp: string;
+}
+
+interface UserData {
+  [key: string]: any;
+}
 
 export class MemoryService {
-    private chatHistory: any[] = [];
+  private chatFile = path.join(__dirname, '../../memory/chatHistory.json');
+  private userFile = path.join(__dirname, '../../memory/userData.json');
 
-    constructor() {
-        console.log("MemoryService initialized");
-        this.loadMemory();
-    }
+  constructor() {
+    // Ensure files exist
+    if (!fs.existsSync(this.chatFile)) fs.writeFileSync(this.chatFile, JSON.stringify([]));
+    if (!fs.existsSync(this.userFile)) fs.writeFileSync(this.userFile, JSON.stringify({}));
+  }
 
-    // Save chat messages
-    saveChat(message: string, sender: "user" | "ai") {
-        const chatEntry = {
-            sender: sender,
-            message: message,
-            timestamp: new Date().toISOString()
-        };
+  // Chat memory
+  getChatHistory(): ChatMessage[] {
+    const data = fs.readFileSync(this.chatFile, 'utf-8');
+    return JSON.parse(data);
+  }
 
-        this.chatHistory.push(chatEntry);
+  addChatMessage(sender: string, message: string) {
+    const chats = this.getChatHistory();
+    chats.push({ sender, message, timestamp: new Date().toISOString() });
+    fs.writeFileSync(this.chatFile, JSON.stringify(chats, null, 2));
+  }
 
-        console.log("Chat saved:", chatEntry);
+  // User data memory
+  getUserData(): UserData {
+    const data = fs.readFileSync(this.userFile, 'utf-8');
+    return JSON.parse(data);
+  }
 
-        // In real app, this would write to memory/chatHistory.json
-    }
-
-    // Load existing memory (placeholder for now)
-    loadMemory() {
-        console.log("Loading memory...");
-        // Later we connect this to actual JSON files
-    }
-
-    // Get all chat history
-    getChatHistory() {
-        return this.chatHistory;
-    }
-
-    // Save user data (name, preferences, etc.)
-    saveUserData(data: any) {
-        console.log("Saving user data:", data);
-        // Later this will connect to memory/persistent/userData.json
-    }
-
-    // Load user data
-    getUserData() {
-        console.log("Getting user data...");
-        return {};
-    }
+  updateUserData(key: string, value: any) {
+    const userData = this.getUserData();
+    userData[key] = value;
+    fs.writeFileSync(this.userFile, JSON.stringify(userData, null, 2));
+  }
 }
