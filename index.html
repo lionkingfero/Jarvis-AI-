@@ -1,36 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jarvis AI</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jarvis AI V5</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Password Overlay -->
-  <div id="password-screen" class="overlay">
-    <h2>Enter Password to Start Jarvis</h2>
-    <input type="password" id="password-input" placeholder="Password">
-    <button id="password-submit">Start</button>
-    <p id="password-error" class="error"></p>
+
+<div id="password-screen" class="overlay">
+  <h2>Enter Password</h2>
+  <input type="password" id="password-input">
+  <button id="password-submit">Start</button>
+  <p id="error"></p>
+</div>
+
+<div id="jarvis" class="hidden">
+  <div id="messages"></div>
+
+  <div id="input-bar">
+    <input id="input" placeholder="Ask Jarvis anything...">
+    <button onclick="send()">➤</button>
   </div>
+</div>
 
-  <!-- Main AI Container -->
-  <div id="jarvis-container" class="hidden">
-    <div id="chat-window">
-      <div id="messages"></div>
-    </div>
-
-    <div id="input-bar">
-      <input type="text" id="user-input" placeholder="Type a message...">
-      <button id="send-button">Send ➤</button>
-      <button id="voice-button">🎤</button>
-      <button id="memory-button">🧠</button>
-      <button id="image-button">📷</button>
-      <button id="code-button">💻</button>
-    </div>
-  </div>
-
-  <script src="scripts.js"></script>
+<script src="scripts.js"></script>
 </body>
 </html>
