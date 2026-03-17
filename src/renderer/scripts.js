@@ -1,31 +1,29 @@
-import { MemoryService } from "./core/MemoryService";
-import { LLMService } from "./core/LLMService";
-import { Agent } from "./core/Agent";
+// Get elements
+const userInput = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
+const messages = document.getElementById("messages");
 
-// Initialize services
-const memory = new MemoryService();
-const llm = new LLMService(memory);
-const agent = new Agent(memory, llm);
+const micBtn = document.getElementById("mic-btn");
+const imageBtn = document.getElementById("image-btn");
+const memoryBtn = document.getElementById("memory-btn");
+const generateBtn = document.getElementById("generate-btn");
 
-// Elements
-const userInput = document.getElementById("user-input") as HTMLInputElement;
-const sendBtn = document.getElementById("send-btn") as HTMLButtonElement;
-const messages = document.getElementById("messages") as HTMLDivElement;
-
-const micBtn = document.getElementById("mic-btn") as HTMLButtonElement;
-const imageBtn = document.getElementById("image-btn") as HTMLButtonElement;
-const memoryBtn = document.getElementById("memory-btn") as HTMLButtonElement;
-const generateBtn = document.getElementById("generate-btn") as HTMLButtonElement;
-
-// Add message to chat window
-function addMessage(sender: string, text: string) {
-  const msg = document.createElement("div");
-  msg.innerHTML = `<b>${sender}:</b> ${text}`;
-  messages.appendChild(msg);
+// Add message function using CSS classes
+function addMessage(sender, text) {
+  const div = document.createElement("div");
+  div.classList.add("message");
+  if (sender === "You") {
+    div.classList.add("user");
+    div.innerHTML = `<b>${sender}:</b> ${text}`;
+  } else {
+    div.classList.add("ai");
+    div.innerHTML = `<b>${sender}:</b> ${text}`;
+  }
+  messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
 }
 
-// Process user input
+// Process input
 async function processInput() {
   const text = userInput.value.trim();
   if (!text) return;
@@ -33,6 +31,7 @@ async function processInput() {
   addMessage("You", text);
 
   try {
+    // This assumes you have Agent class imported and initialized
     const response = await agent.processInput(text);
     addMessage("Jarvis", response);
   } catch (err) {
