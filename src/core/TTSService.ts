@@ -1,22 +1,34 @@
-// TTSService.ts
-// Handles Text-To-Speech (voice output)
-
 export class TTSService {
-    constructor() {
-        console.log("TTSService initialized");
+  private synth: SpeechSynthesis;
+
+  constructor() {
+    this.synth = window.speechSynthesis;
+  }
+
+  /**
+   * Speak the text out loud
+   * @param text Text to speak
+   */
+  public speak(text: string): void {
+    if (!this.synth) {
+      console.warn("Text-to-Speech not supported in this browser.");
+      return;
     }
 
-    speak(text: string) {
-        console.log(`Speaking: ${text}`);
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 1; // speed of speech
+    utterance.pitch = 1; // pitch of voice
 
-        // Browser-based TTS (works later when connected to frontend)
-        if (typeof window !== "undefined" && 'speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US";
-            speechSynthesis.speak(utterance);
-        } else {
-            // Fallback (for environments without speech support)
-            console.log("TTS not supported in this environment");
-        }
+    this.synth.speak(utterance);
+  }
+
+  /**
+   * Stop any ongoing speech
+   */
+  public stop(): void {
+    if (this.synth.speaking) {
+      this.synth.cancel();
     }
+  }
 }
