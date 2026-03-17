@@ -1,0 +1,99 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis AI</title>
+
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        #chat {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #334155;
+            height: 300px;
+            overflow-y: auto;
+            background: #020617;
+        }
+
+        .message {
+            margin: 10px 0;
+        }
+
+        .user {
+            color: #22c55e;
+        }
+
+        .ai {
+            color: #60a5fa;
+        }
+
+        input {
+            width: 70%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            padding: 10px;
+            background: #38bdf8;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Jarvis AI</h1>
+
+    <div id="chat"></div>
+
+    <input type="text" id="input" placeholder="Ask something..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const chat = document.getElementById("chat");
+        const input = document.getElementById("input");
+
+        function addMessage(text, sender) {
+            const div = document.createElement("div");
+            div.classList.add("message", sender);
+            div.textContent = text;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const text = input.value;
+            if (!text) return;
+
+            addMessage("You: " + text, "user");
+
+            // Simulated AI response (we will connect real backend later)
+            const response = "Searching for " + text + "...";
+
+            setTimeout(() => {
+                addMessage("Jarvis: " + response, "ai");
+            }, 500);
+
+            input.value = "";
+        }
+    </script>
+
+</body>
+</html>
