@@ -1,29 +1,39 @@
-// Get elements
-const userInput = document.getElementById("user-input");
-const sendBtn = document.getElementById("send-btn");
-const messages = document.getElementById("messages");
+import { MemoryService } from "./core/MemoryService";
+import { LLMService } from "./core/LLMService";
+import { Agent } from "./core/Agent";
+import { TTSService } from "./core/TTSService";
 
-const micBtn = document.getElementById("mic-btn");
-const imageBtn = document.getElementById("image-btn");
-const memoryBtn = document.getElementById("memory-btn");
-const generateBtn = document.getElementById("generate-btn");
+// Initialize services
+const memory = new MemoryService();
+const llm = new LLMService(memory);
+const agent = new Agent(memory, llm);
+const tts = new TTSService();
 
-// Add message function using CSS classes
-function addMessage(sender, text) {
+// Elements
+const userInput = document.getElementById("user-input") as HTMLInputElement;
+const sendBtn = document.getElementById("send-btn") as HTMLButtonElement;
+const messages = document.getElementById("messages") as HTMLDivElement;
+
+const micBtn = document.getElementById("mic-btn") as HTMLButtonElement;
+const imageBtn = document.getElementById("image-btn") as HTMLButtonElement;
+const memoryBtn = document.getElementById("memory-btn") as HTMLButtonElement;
+const generateBtn = document.getElementById("generate-btn") as HTMLButtonElement;
+
+// Add message to chat window
+function addMessage(sender: "You" | "Jarvis", text: string) {
   const div = document.createElement("div");
-  div.classList.add("message");
-  if (sender === "You") {
-    div.classList.add("user");
-    div.innerHTML = `<b>${sender}:</b> ${text}`;
-  } else {
-    div.classList.add("ai");
-    div.innerHTML = `<b>${sender}:</b> ${text}`;
-  }
+  div.classList.add("message", sender === "You" ? "user" : "ai");
+  div.innerHTML = `<b>${sender}:</b> ${text}`;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
+
+  // Jarvis speaks if it's him
+  if (sender === "Jarvis") {
+    tts.speak(text);
+  }
 }
 
-// Process input
+// Process user input
 async function processInput() {
   const text = userInput.value.trim();
   if (!text) return;
@@ -31,7 +41,6 @@ async function processInput() {
   addMessage("You", text);
 
   try {
-    // This assumes you have Agent class imported and initialized
     const response = await agent.processInput(text);
     addMessage("Jarvis", response);
   } catch (err) {
