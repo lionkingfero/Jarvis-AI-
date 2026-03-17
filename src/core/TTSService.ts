@@ -5,30 +5,21 @@ export class TTSService {
     this.synth = window.speechSynthesis;
   }
 
-  /**
-   * Speak the text out loud
-   * @param text Text to speak
-   */
+  // Speak text out loud
   public speak(text: string): void {
     if (!this.synth) {
-      console.warn("Text-to-Speech not supported in this browser.");
+      console.warn("Text-to-Speech not supported.");
       return;
     }
-
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
-    utterance.rate = 1; // speed of speech
-    utterance.pitch = 1; // pitch of voice
-
+    utterance.rate = 1;
+    utterance.pitch = 1;
     this.synth.speak(utterance);
   }
 
-  /**
-   * Stop any ongoing speech
-   */
+  // Stop speaking
   public stop(): void {
-    if (this.synth.speaking) {
-      this.synth.cancel();
-    }
+    if (this.synth.speaking) this.synth.cancel();
   }
 }
